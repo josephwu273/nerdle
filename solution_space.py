@@ -11,7 +11,9 @@ def validate(exp):
         y = int(RHS)
     except:
         return False
+    if y<0:
+        return False
     return x==y
 
 
-print(validate("2+3+=5"))
+print(validate("1-5=-4"))
