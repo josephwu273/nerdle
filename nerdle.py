@@ -73,9 +73,3 @@ class Solution(Guess):
         l = all(LHS[0]!=c for c in FIRST_FORBIDDEN)
         r = all(RHS[0]!=c for c in FIRST_FORBIDDEN)
         return l and r
-
-
-
-
-print(Guess.validate("1**2=001")) #is True
-print(Solution.validate("1**2=001")) #is False
