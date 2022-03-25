@@ -1,3 +1,5 @@
+from re import match
+
 CHAR_SET = "0123456789+-*/="
 LENGTH = 8
 GUESS_FORBIDDEN = ["//"]
@@ -14,7 +16,8 @@ class Guess:
         ne = cls.check_numequals(s)
         eq = cls.check_equality(s)
         fi = cls.check_firstchar(s)
-        return le and ch and ne and eq
+        nz = cls.check_nolonezero(s)
+        return all([le, ch, ne, eq, fi, nz])
 
     @staticmethod
     def check_length(s):
@@ -46,18 +49,22 @@ class Guess:
         """
         Checks validity/equality of equation
         """
-        #strip leading zeros because Python itself doesn't allow leading zeros
-        #fucking dumbass
-        s1, s2 = Guess.split_equation(s)
-        LHS =  ' '.join(str(int(x)) if x.isdigit() else x for x in s1.split())
-        RHS =  ' '.join(str(int(x)) if x.isdigit() else x for x in s2.split())
         try:
+            #strip leading zeros because Python itself doesn't allow leading zeros
+            #fucking dumbass
+            s1, s2 = Guess.split_equation(s)
+            LHS =  ' '.join(str(int(x)) if x.isdigit() else x for x in s1.split())
+            RHS =  ' '.join(str(int(x)) if x.isdigit() else x for x in s2.split())
             return eval(LHS)==eval(RHS)
         except:
             return False
     
     @staticmethod
     def check_firstchar(s):
+        return True
+    
+    @staticmethod
+    def check_nolonezero(s):
         return True
 
 
@@ -69,7 +76,15 @@ class Solution(Guess):
 
     @staticmethod
     def check_firstchar(s):
-        LHS,RHS = Solution.split_equation(s)
-        l = all(LHS[0]!=c for c in FIRST_FORBIDDEN)
-        r = all(RHS[0]!=c for c in FIRST_FORBIDDEN)
-        return l and r
+        try:
+            LHS,RHS = Solution.split_equation(s)
+            l = all(LHS[0]!=c for c in FIRST_FORBIDDEN)
+            r = all(RHS[0]!=c for c in FIRST_FORBIDDEN)
+            return l and r
+        except:
+            return False
+    
+    @staticmethod
+    def check_nolonezero(s):
+        r = ".*(\+|-|\*|\/)0+(=|\+|-|\*|\/).*"
+        return bool(match(r,s))
