@@ -77,5 +77,5 @@ class Solution(Guess):
 
 
 
-print(Guess.validate("1**2=001"))
-print(Solution.validate("1**2=001"))
+print(Guess.validate("1**2=001")) #is True
+print(Solution.validate("1**2=001")) #is False
