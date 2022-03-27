@@ -1,4 +1,5 @@
 import re
+from turtle import RawPen
 
 CHAR_SET = "0123456789+-*/="
 LENGTH = 8
@@ -6,6 +7,10 @@ GUESS_FORBIDDEN = ["//"]
 SOLUTION_FORBIDDEN = ["**", "++", "+-", "-+", "--"] + GUESS_FORBIDDEN
 FIRST_FORBIDDEN = "0+-"
 NUM_EQUALS = 1
+NUM_GUESSES = 6
+EXACT = "G"
+CLOSE = "P"
+WRONG = "B"
 
 
 class Guess:
@@ -89,3 +94,31 @@ class Solution(Guess):
     def check_nolonezero(s):
         r = r".*(\+|-|\*|\/)0+(=|\+|-|\*|\/).*"
         return not bool(re.match(r,s))
+
+
+class Game:
+    def __init__(self, ans):
+        self.answer = ans
+        self.remaining = NUM_GUESSES
+
+    def guess(self, guess):
+        output = [WRONG]*5
+        ans = self.answer
+        counts = {c:ans.count(c) for c in ans}
+        i=0
+        while i<len(ans):
+            a=ans[i]
+            g=guess[i]
+            if a==g:
+                output[i]=EXACT
+                counts[a] -= 1
+            i+=1
+        j=0
+        while j<len(ans):
+            a=ans[j]
+            g=guess[j]
+            if a!=g and g in ans and counts[g]>0:
+                output[j]=CLOSE
+            j+=1
+        print("".join(output))
+        return "".join(output)
