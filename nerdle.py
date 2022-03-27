@@ -1,4 +1,4 @@
-from re import match
+import re
 
 CHAR_SET = "0123456789+-*/="
 LENGTH = 8
@@ -42,20 +42,21 @@ class Guess:
 
     @staticmethod
     def split_equation(s):
-        return (s.split("=")[0], s.split("=")[1])
+        return s.split("=")
     
     @staticmethod
     def check_equality(s):
         """
         Checks validity/equality of equation
         """
+        string_expressions = Guess.split_equation(s)
+        #strip leading 0s because python is dumb about leading zeros
+        #fucking dumbass
+        expressions = [re.sub(r"0+(\d)", r"\1",se) for se in string_expressions]
+        print(expressions)
         try:
-            #strip leading zeros because Python itself doesn't allow leading zeros
-            #fucking dumbass
-            s1, s2 = Guess.split_equation(s)
-            LHS =  ' '.join(str(int(x)) if x.isdigit() else x for x in s1.split())
-            RHS =  ' '.join(str(int(x)) if x.isdigit() else x for x in s2.split())
-            return eval(LHS)==eval(RHS)
+            y = [eval(i) for i in expressions]
+            return all([q==y[0] for q in y])
         except:
             return False
     
@@ -86,5 +87,5 @@ class Solution(Guess):
     
     @staticmethod
     def check_nolonezero(s):
-        r = ".*(\+|-|\*|\/)0+(=|\+|-|\*|\/).*"
-        return bool(match(r,s))
+        r = r".*(\+|-|\*|\/)0+(=|\+|-|\*|\/).*"
+        return not bool(re.match(r,s))
