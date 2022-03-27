@@ -1,5 +1,4 @@
 import re
-from turtle import RawPen
 
 CHAR_SET = "0123456789+-*/="
 LENGTH = 8
@@ -101,24 +100,28 @@ class Game:
         self.answer = ans
         self.remaining = NUM_GUESSES
 
-    def guess(self, guess):
-        output = [WRONG]*5
+    def guess(self, gue):
+        output = [WRONG]*LENGTH
         ans = self.answer
         counts = {c:ans.count(c) for c in ans}
+        #EXACT Pass. To handle duplicate chars correctly, It is neceary to 
+        # first pass through the guess checking for exact matches
         i=0
         while i<len(ans):
             a=ans[i]
-            g=guess[i]
+            g=gue[i]
             if a==g:
                 output[i]=EXACT
-                counts[a] -= 1
+                counts[g] -= 1
             i+=1
+        #CLOSE pass, now pass through inserting CLOSE as neceesary
         j=0
         while j<len(ans):
             a=ans[j]
-            g=guess[j]
+            g=gue[j]
             if a!=g and g in ans and counts[g]>0:
                 output[j]=CLOSE
+                counts[g] -= 1
             j+=1
         print("".join(output))
         return "".join(output)
