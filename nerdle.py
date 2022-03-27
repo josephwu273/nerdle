@@ -5,6 +5,7 @@ LENGTH = 8
 GUESS_FORBIDDEN = ["//"]
 SOLUTION_FORBIDDEN = ["**", "++", "+-", "-+", "--"] + GUESS_FORBIDDEN
 FIRST_FORBIDDEN = "0+-"
+#Note that no current iteration of nerdle allows for multiple equals signs
 NUM_EQUALS = 1
 NUM_GUESSES = 6
 EXACT = "G"
@@ -46,18 +47,25 @@ class Guess:
 
     @staticmethod
     def split_equation(s):
-        return s.split("=")
+        """
+        Returns LHS and RHS of equation as a tuple
+        """
+        expressions = s.split("=")
+        if len(expressions)!=2:
+            raise ValueError("Equation has more than one = sign")
+        else:
+            return expressions[0],expressions[1]
     
     @staticmethod
     def check_equality(s):
         """
         Checks validity/equality of equation
         """
-        string_expressions = Guess.split_equation(s)
+        expressions = Guess.split_equation(s)
         #strip leading 0s because python is dumb about leading zeros
         #fucking dumbass
-        expressions = [re.sub(r"0+(\d)", r"\1",se) for se in string_expressions]
-        print(expressions)
+        LHS = re.sub(r"0+(\d)", r"\1", expressions[0])
+        RHS = re.sub(r"0+(\d)", r"\1", expressions[1])
         try:
             y = [eval(i) for i in expressions]
             return all([q==y[0] for q in y])
