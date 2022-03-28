@@ -17,11 +17,8 @@ class Guess:
     @classmethod
     def validate(cls, s):
         le = cls.check_length(s)
-        ch = cls.check_format(s)
-        ne = cls.check_numequals(s)
-        eq = cls.check_equality(s)
-        return all([le, ch, ne, eq])
-
+        return cls.check_equality(s) and cls.check_format(s)
+        
     @staticmethod
     def check_length(s):
         """
@@ -35,13 +32,6 @@ class Guess:
         Checks that <s> has only allowed chars and no forbidden subsings
         """
         return bool(re.match(Guess.GUESS_REGEX,s))
-    
-    @staticmethod
-    def check_numequals(s):
-        """
-        Checks <s> has the correct number of equals signs
-        """
-        return s.count("=")==NUM_EQUALS
 
     @staticmethod
     def split_equation(s):
@@ -65,8 +55,7 @@ class Guess:
         LHS = re.sub(r"0+(\d)", r"\1", expressions[0])
         RHS = re.sub(r"0+(\d)", r"\1", expressions[1])
         try:
-            y = [eval(i) for i in expressions]
-            return all([q==y[0] for q in y])
+            return LHS==RHS
         except:
             return False
 

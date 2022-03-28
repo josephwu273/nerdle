@@ -1,7 +1,6 @@
 #WARNING: THIS CODE WILL TAKE A WHILE TO RUN
 from itertools import product
 from nerdle import *
-import time
 import datetime
  
 
