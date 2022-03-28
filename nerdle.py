@@ -2,9 +2,6 @@ import re
 
 CHAR_SET = "0123456789+-*/="
 LENGTH = 8
-GUESS_FORBIDDEN = ["//"]
-SOLUTION_FORBIDDEN = ["**", "++", "+-", "-+", "--"] + GUESS_FORBIDDEN
-FIRST_FORBIDDEN = "0+-"
 #Note that no current iteration of nerdle allows for multiple equals signs
 NUM_EQUALS = 1
 NUM_GUESSES = 6
@@ -14,15 +11,16 @@ WRONG = "B"
 
 
 class Guess:
+    GUESS_FORBIDDEN = ["//"]
+    GUESS_REGEX = r"^(?!.*//)[\d+\-*/]*=[\d+\-*/]*$"
+
     @classmethod
     def validate(cls, s):
         le = cls.check_length(s)
-        ch = cls.check_chars(s)
+        ch = cls.check_format(s)
         ne = cls.check_numequals(s)
         eq = cls.check_equality(s)
-        fi = cls.check_firstchar(s)
-        nz = cls.check_nolonezero(s)
-        return all([le, ch, ne, eq, fi, nz])
+        return all([le, ch, ne, eq])
 
     @staticmethod
     def check_length(s):
@@ -32,11 +30,11 @@ class Guess:
         return len(s)==LENGTH
     
     @staticmethod
-    def check_chars(s):
+    def check_format(s):
         """
         Checks that <s> has only allowed chars and no forbidden subsings
         """
-        return all(c in CHAR_SET for c in s) and all(e not in s for e in GUESS_FORBIDDEN)
+        return bool(re.match(Guess.GUESS_REGEX,s))
     
     @staticmethod
     def check_numequals(s):
@@ -71,36 +69,18 @@ class Guess:
             return all([q==y[0] for q in y])
         except:
             return False
-    
-    @staticmethod
-    def check_firstchar(s):
-        return True
-    
-    @staticmethod
-    def check_nolonezero(s):
-        return True
+
 
 
 class Solution(Guess):
-    @staticmethod
-    def check_chars(s):
-        g = Guess.check_chars(s)
-        return g and all(e not in s for e in SOLUTION_FORBIDDEN)
+    SOLUTION_FORBIDDEN = ["**", "++", "+-", "-+", "--"] + Guess.GUESS_FORBIDDEN
+    SOLUTION_REGEX = r"^([1-9]\d*[+\-*/])+([1-9]\d*[+\-*/][1-9]\d*)=\d*$"
+    FIRST_FORBIDDEN = "0+-"
 
     @staticmethod
-    def check_firstchar(s):
-        try:
-            LHS,RHS = Solution.split_equation(s)
-            l = all(LHS[0]!=c for c in FIRST_FORBIDDEN)
-            r = all(RHS[0]!=c for c in FIRST_FORBIDDEN)
-            return l and r
-        except:
-            return False
-    
-    @staticmethod
-    def check_nolonezero(s):
-        r = r".*(\+|-|\*|\/)0+(=|\+|-|\*|\/).*"
-        return not bool(re.match(r,s))
+    def check_format(s):
+        return bool(re.match(Solution.SOLUTION_REGEX,s))
+
 
 
 class Game:
