@@ -11,8 +11,8 @@ WRONG = "B"
 
 
 class Guess:
-    GUESS_FORBIDDEN = ["//"]
     GUESS_REGEX = r"^(?!.*//)[\d+\-*/]*=[\d+\-*/]*$"
+    #No //-symbol
 
     @classmethod
     def validate(cls, s):
@@ -73,9 +73,8 @@ class Guess:
 
 
 class Solution(Guess):
-    SOLUTION_FORBIDDEN = ["**", "++", "+-", "-+", "--"] + Guess.GUESS_FORBIDDEN
     SOLUTION_REGEX = r"^([1-9]\d*[+\-*/])+([1-9]\d*[+\-*/][1-9]\d*)=\d*$"
-    FIRST_FORBIDDEN = "0+-"
+    #No leading/lone zero; no leading/double operator; only numbers on RHS
 
     @staticmethod
     def check_format(s):
