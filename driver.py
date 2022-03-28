@@ -45,6 +45,7 @@ for i in all_combos:
         p = round(i/n * 100, 4)
         i += 1
         print(f"{p}% done, {t.remains(i)}", end="\r")
-
+gfile.close()
+sfile.close()
 print(len(guess_space))
 print(len(solution_space))
