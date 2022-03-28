@@ -16,8 +16,7 @@ class Guess:
 
     @classmethod
     def validate(cls, s):
-        le = cls.check_length(s)
-        return cls.check_equality(s) and cls.check_format(s)
+        return cls.check_equality(s) and cls.check_format(s) and cls.check_length(s)
         
     @staticmethod
     def check_length(s):
