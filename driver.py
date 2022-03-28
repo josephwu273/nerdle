@@ -26,18 +26,22 @@ class Timer(object):
 guess_space = []
 solution_space = []
 
-p = product("0123456789+-*/",repeat=LENGTH-1)
+all_combos = product("0123456789+-*/",repeat=LENGTH-1)
 n = 14**7 * 6
 i=0
 t = Timer(n)
-for s in p:
-    s = "".join(s)
+gfile = open("guess_space.txt","w")
+sfile = open("solution_file.txt","w")
+for i in all_combos:
+    s = "".join(i)
     for j in range(1,LENGTH-1):
-        q = s[:j]+"="+s[j:]
-        if Guess.validate(q):
-            guess_space.append(q)
-        if Solution.validate(q):
-            solution_space.append(q)
+        eqn = s[:j]+"="+s[j:]
+        if Guess.validate(eqn):
+            guess_space.append(eqn)
+            gfile.write(eqn+"\n")
+        if Solution.validate(eqn):
+            solution_space.append(eqn)
+            sfile.write(eqn+"\n")
         p = round(i/n * 100, 4)
         i += 1
         print(f"{p}% done, {t.remains(i)}", end="\r")
