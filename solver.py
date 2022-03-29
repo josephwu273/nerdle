@@ -2,12 +2,22 @@ from nerdle import *
 from itertools import product
 from Timer import Timer
 
+GUESS_FILE = "guess_space.txt"
+SOLUTION_FILE = "solution_space.txt"
+
 GUESS_SPACE = []
+with open(GUESS_FILE, "r") as gfile:
+    GUESS_SPACE = [e for e in gfile.read().split("\n") if e]
 SOLUTION_SPACE = []
+with open(SOLUTION_FILE, "r") as  sfile:
+    SOLUTION_SPACE = [s for s in sfile.read().split("\n") if s]
 
 
 def generate_guess_space(disp=False):
-    GUESS_SPACE.clear()
+    global GUESS_SPACE
+    if len(GUESS_SPACE)!=0:
+        raise Exception(f"{GUESS_FILE} is not empty. Clear it manually to make sure you are not overriding good data")
+    gspace = []
     all_combos = product("0123456789+-*/",repeat=LENGTH-3)
     n = 12*(14**5)*10 * 6
     i=0
@@ -21,15 +31,19 @@ def generate_guess_space(disp=False):
                     if s[j-1].isdigit() and (s[j] in "0123456789+-"):
                         eqn = s[:j]+"="+s[j:]
                         if Guess.validate(eqn):
-                            GUESS_SPACE.append(eqn+"\n")
-                    i += 1
-                    p = round(i/n*100, 4)
-                    if disp: print(f"{eqn} {p}% done, {t.remains(i)}", end="\r")
+                            gspace.append(eqn+"\n")
+                    if disp:
+                        i += 1
+                        p = round(i/n*100, 4)
+                        print(f"{eqn} {p}% done, {t.remains(i)}", end="\r")
     print()
-    with open("guess_space.txt","w") as gfile:
-        gfile.writelines(GUESS_SPACE)
+    with open(GUESS_FILE,"w") as gfile:
+        gfile.writelines(gspace)
+    GUESS_SPACE = gspace
 
 def generate_solution_space(disp=False):
+    global SOLUTION_SPACE
+    sspace = []
     if len(GUESS_SPACE)==0:
         if disp: print("First generating guess space...")
         generate_guess_space(disp)
@@ -38,11 +52,12 @@ def generate_solution_space(disp=False):
     t = Timer(n, disp)
     for g in GUESS_SPACE:
         if Solution.validate(g):
-            SOLUTION_SPACE.append(g+"\n")
+            sspace.append(g+"\n")
         if disp:
             i += 1
             p = round(i/n*100, 4)
             print(f"{g} {p}% done, {t.remains(i)}", end="\r")
     print()
     with open("solution_space.txt", "w") as sfile:
-        sfile.writelines(SOLUTION_SPACE)
+        sfile.writelines(sspace)
+    SOLUTION_SPACE = sspace
