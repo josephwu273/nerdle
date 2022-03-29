@@ -13,7 +13,7 @@ WRONG = "B"
 class Guess:
     GUESS_REGEX = r"^(?!.*//)[\d+\-*/]*=[\d+\-*/]*$"
     #No //-symbol
-
+    
     @classmethod
     def validate(cls, s):
         return cls.check_equality(s) and cls.check_format(s) #and cls.check_length(s)
@@ -41,20 +41,20 @@ class Guess:
         if len(expressions)!=2:
             raise ValueError("Equation has more than one = sign")
         else:
-            return expressions[0],expressions[1]
+            #strip leading 0s because python is dumb about leading zeros
+            #fucking dumbass
+            LHS = re.sub(r"0+(\d)", r"\1", expressions[0])
+            RHS = re.sub(r"0+(\d)", r"\1", expressions[1])
+            return LHS,RHS
     
     @staticmethod
     def check_equality(s):
         """
         Checks validity/equality of equation
         """
-        expressions = Guess.split_equation(s)
-        #strip leading 0s because python is dumb about leading zeros
-        #fucking dumbass
-        LHS = re.sub(r"0+(\d)", r"\1", expressions[0])
-        RHS = re.sub(r"0+(\d)", r"\1", expressions[1])
+        LHS,RHS = Guess.split_equation(s)
         try:
-            return LHS==RHS
+            return eval(LHS)==eval(RHS)
         except:
             return False
 
