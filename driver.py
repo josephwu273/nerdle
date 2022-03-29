@@ -30,22 +30,20 @@ all_combos = product("0123456789+-*/",repeat=LENGTH-1)
 n = 14**7 * 6
 i=0
 t = Timer(n)
-gfile = open("guess_space.txt","w")
-sfile = open("solution_file.txt","w")
-for i in all_combos:
-    s = "".join(i)
+for c in all_combos:
+    s = "".join(c)
     for j in range(1,LENGTH-1):
         eqn = s[:j]+"="+s[j:]
         if Guess.validate(eqn):
-            guess_space.append(eqn)
-            gfile.write(eqn+"\n")
-        if Solution.validate(eqn):
-            solution_space.append(eqn)
-            sfile.write(eqn+"\n")
+            guess_space.append(eqn+"\n")
+            if Solution.validate(eqn):
+                solution_space.append(eqn+"\n")
         p = round(i/n * 100, 4)
         i += 1
         print(f"{p}% done, {t.remains(i)}", end="\r")
-gfile.close()
-sfile.close()
+with open("guess_space.txt","w") as gfile:
+    gfile.writelines(guess_space)
+with open("solution_file.txt","w") as sfile:
+    sfile.writelines(solution_space)
 print(len(guess_space))
 print(len(solution_space))

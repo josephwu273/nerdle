@@ -16,7 +16,7 @@ class Guess:
 
     @classmethod
     def validate(cls, s):
-        return cls.check_equality(s) and cls.check_format(s) and cls.check_length(s)
+        return cls.check_equality(s) and cls.check_format(s) #and cls.check_length(s)
         
     @staticmethod
     def check_length(s):
@@ -61,7 +61,7 @@ class Guess:
 
 
 class Solution(Guess):
-    SOLUTION_REGEX = r"^([1-9]\d*[+\-*/])+([1-9]\d*[+\-*/][1-9]\d*)=\d*$"
+    SOLUTION_REGEX = r"^([1-9]\d*[+\-*/][1-9]\d*)([+\-*/][1-9]\d*)*=(0|[1-9]\d*)$"
     #No leading/lone zero; no leading/double operator; only numbers on RHS
 
     @staticmethod
