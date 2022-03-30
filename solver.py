@@ -1,12 +1,10 @@
 from nerdle import *
 from itertools import product
 from Timer import Timer
-from string import digits
-
+import string
 
 GUESS_FILE = "guess_space.txt"
 SOLUTION_FILE = "solution_space.txt"
-
 GUESS_SPACE = []
 try:
     with open(GUESS_FILE, "r") as gfile:
@@ -20,22 +18,24 @@ try:
 except:
     pass
 
+
+
 def generate_guess_space(disp=False):
     global GUESS_SPACE
-    if len(GUESS_SPACE)!=0: pass
-        #raise Exception(f"{GUESS_FILE} is not empty. Clear it manually to make sure you are not overriding good data")
+    if len(GUESS_SPACE)!=0:
+        raise Exception(f"{GUESS_FILE} is not empty. Clear it manually to make sure you are not overriding good data")
     gspace = []
-    all_combos = product("0123456789+-*/",repeat=LENGTH-3)
-    n = 12*(14**5)*1 * 6
+    all_combos = product(string.digits+"+-*/", repeat=LENGTH-3)
+    n = 12*(14**5)*10*6
     i=0
     t = Timer(n, disp)
     for c in all_combos:
         c = "".join(c)
-        for x in "0123456789+-":
+        for x in string.digits+"+-":
             for y in string.digits:
                 s = x+c+y
                 for j in range(1,LENGTH-1):
-                    if s[j-1].isdigit() and (s[j] in "0123456789+-"):
+                    if s[j-1].isdigit() and (s[j] in (string.digits+"+-")):
                         eqn = s[:j]+"="+s[j:]
                         if Guess.validate(eqn):
                             gspace.append(eqn+"\n")
