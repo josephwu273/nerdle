@@ -3,8 +3,8 @@ from itertools import product
 from Timer import Timer
 import string
 
-GUESS_FILE = "guess_space.txt"
-SOLUTION_FILE = "solution_space.txt"
+GUESS_FILE = "docs/guess_space.txt"
+SOLUTION_FILE = "docs/solution_space.txt"
 GUESS_SPACE = []
 try:
     with open(GUESS_FILE, "r") as gfile:
