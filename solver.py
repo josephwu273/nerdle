@@ -42,7 +42,7 @@ def generate_guess_space(disp=False):
                     if disp:
                         i += 1
                         p = round(i/n*100, 4)
-                        print(f"{eqn} {p}% done, {t.remains(i)}", end="\r")
+                        print(f" Finish in {t.remains(i)}; {p}% done", end="\r")
     print()
     with open(GUESS_FILE,"a") as gfile:
         gfile.writelines(gspace)
