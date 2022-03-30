@@ -43,8 +43,8 @@ class Guess:
         else:
             #strip leading 0s because python is dumb about leading zeros
             #fucking dumbass
-            LHS = re.sub(r"0+(\d)", r"\1", expressions[0])
-            RHS = re.sub(r"0+(\d)", r"\1", expressions[1])
+            LHS = re.sub(r"(^|[^\d])0+(\d)", r"\1\2", expressions[0])
+            RHS = re.sub(r"(^|[^\d])0+(\d)", r"\1\2", expressions[1])
             return LHS,RHS
     
     @staticmethod
