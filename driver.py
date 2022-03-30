@@ -1,4 +1,3 @@
-#WARNING: THIS CODE WILL TAKE A WHILE TO RUN
 import solver
 
-solver.generate_guess_space(True)
+solver.generate_solution_space(True)
