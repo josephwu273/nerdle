@@ -2,8 +2,6 @@ import re
 
 CHAR_SET = "0123456789+-*/="
 LENGTH = 8
-#Note that no current iteration of nerdle allows for multiple equals signs
-NUM_EQUALS = 1
 NUM_GUESSES = 6
 EXACT = "G"
 CLOSE = "P"
@@ -21,23 +19,26 @@ class Guess:
     @staticmethod
     def check_length(s):
         """
-        Ensures <s> is the right LENGTH for a nerdle guess
+        Checks that <s> is the right LENGTH for a nerdle guess
         """
         return len(s)==LENGTH
     
     @staticmethod
     def check_format(s):
         """
-        Checks that <s> has only allowed chars and no forbidden subsings
+        Checks that <s> is in the correct format. Note that an input can pass 
+        check_format and still be an invalid guess.
         """
         return bool(re.match(Guess.GUESS_REGEX,s))
 
     @staticmethod
     def split_equation(s):
         """
-        Returns LHS and RHS of equation as a tuple
+        Returns LHS and RHS of equation as a tuple of stringles. Also strips LHS
+        and RHS of any leading zeroes that will cause SyntaxErrors in Python. 
         """
         expressions = s.split("=")
+        #No current Nerdle variant allows multiple equals signs so check for that
         if len(expressions)!=2:
             raise ValueError("Equation has more than one = sign")
         else:
@@ -52,8 +53,8 @@ class Guess:
         """
         Checks validity/equality of equation
         """
-        LHS,RHS = Guess.split_equation(s)
         try:
+            LHS,RHS = Guess.split_equation(s)
             return eval(LHS)==eval(RHS)
         except:
             return False
@@ -74,29 +75,38 @@ class Game:
     def __init__(self, ans):
         self.answer = ans
         self.remaining = NUM_GUESSES
+    
+    @property
+    def answer(self, a):
+        if Solution.validate(a):
+            self._answer = a
+        else:
+            raise ValueError("Inputted answer is not a valid Nerdle Solution")
 
     def guess(self, gue):
+        """
+        Given guess <gue> outputs the answer patten as a string. If given an
+        invalid guess, returns a string of 0-s
+        """
+        if not Guess.validate(gue):
+            return "0"*LENGTH
         output = [WRONG]*LENGTH
         ans = self.answer
         counts = {c:ans.count(c) for c in ans}
         #EXACT Pass. To handle duplicate chars correctly, It is neceary to 
         # first pass through the guess checking for exact matches
-        i=0
-        while i<len(ans):
+        for i in range(LENGTH):
             a=ans[i]
             g=gue[i]
             if a==g:
                 output[i]=EXACT
                 counts[g] -= 1
-            i+=1
         #CLOSE pass, now pass through inserting CLOSE as neceesary
-        j=0
-        while j<len(ans):
+        for j in range(LENGTH):
             a=ans[j]
             g=gue[j]
             if a!=g and g in ans and counts[g]>0:
                 output[j]=CLOSE
                 counts[g] -= 1
-            j+=1
         print("".join(output))
         return "".join(output)
