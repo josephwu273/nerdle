@@ -26,16 +26,22 @@ def generate_guess_space(disp=False):
         raise Exception(f"{GUESS_FILE} is not empty. Clear it manually to make sure you are not overriding good data")
     gspace = []
     all_combos = product(string.digits+"+-*/", repeat=LENGTH-3)
+    #n is the the total number of candidates we must check
+    #We peform some pruning first so n isn't actually isn't 14^LENGTH
     n = 12*(14**5)*10*6
     i=0
     t = Timer(n, disp)
     for c in all_combos:
         c = "".join(c)
         for x in string.digits+"+-":
+            #First entry cannot be * or / so prune those results...
             for y in string.digits:
+                #Last entry must be a digit
                 s = x+c+y
                 for j in range(1,LENGTH-1):
                     if s[j-1].isdigit() and (s[j] in (string.digits+"+-")):
+                        #Last entry of LHS must be a digit
+                        #First entry of RHS cannot be * or /
                         eqn = s[:j]+"="+s[j:]
                         if Guess.validate(eqn):
                             gspace.append(eqn+"\n")
@@ -43,7 +49,6 @@ def generate_guess_space(disp=False):
                         i += 1
                         p = round(i/n*100, 4)
                         print(f" Finish in {t.remains(i)}; {p}% done", end="\r")
-    print()
     with open(GUESS_FILE,"a") as gfile:
         gfile.writelines(gspace)
     GUESS_SPACE = gspace
