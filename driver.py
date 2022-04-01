@@ -1,3 +1,3 @@
 import solver
 
-solver.generate_solution_space(True)
+solver.generate_guess_space(True)
