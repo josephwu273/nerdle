@@ -1,6 +1,8 @@
 #code borrowed from https://code-maven.com/python-time-left
 import datetime
 
+
+
 class Timer(object):
     def __init__(self, total, disp=False):
         self.start = datetime.datetime.now()
@@ -13,8 +15,7 @@ class Timer(object):
         left = (self.total - done) * (now - self.start) / done
         finish = now+left
         return f"{finish.strftime('%H:%M')}"
- 
-    
+   
     def remains(self, done):
         now  = datetime.datetime.now()
         #print(now-start)  # elapsed time
