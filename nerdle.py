@@ -77,13 +77,29 @@ class Game:
         self.remaining = NUM_GUESSES
     
     @property
+    def answer(self):
+        return self._answer
+    @answer.setter
     def answer(self, a):
-        if Solution.validate(a):
-            self._answer = a
-        else:
+        if not Solution.validate(a):
             raise ValueError("Inputted answer is not a valid Nerdle Solution")
+        self._answer = a
 
-    def guess(self, gue):
+    def play(self, gue):
+        if Guess.validate(gue):
+            pattern = self.get_patten(gue)
+            self.remaining -= 1
+            print(pattern)
+            if pattern==EXACT*LENGTH:
+                print(f"CORRECT! Guessed in {NUM_GUESSES-self.remaining}")
+            elif self.remaining==0:
+                print("GAME OVER")
+            else:
+                print("Guess again...")
+        else:
+            print("Bad Guess. Try again")
+
+    def get_patten(self, gue):
         """
         Given guess <gue> outputs the answer patten as a string. If given an
         invalid guess, returns a string of 0-s
@@ -108,5 +124,4 @@ class Game:
             if a!=g and g in ans and counts[g]>0:
                 output[j]=CLOSE
                 counts[g] -= 1
-        print("".join(output))
         return "".join(output)
