@@ -8,7 +8,7 @@ class Timer(object):
         self.start = datetime.datetime.now()
         self.total = total
         if disp:
-            print(f" Process started at {self.start}")
+            print(f"*Process started at {self.start}")
 
     def finish(self, done):
         now = datetime.datetime.now()
