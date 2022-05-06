@@ -4,6 +4,7 @@ from math import log2 as lg
 from Timer import Timer
 from scipy.stats import entropy
 import csv
+import random
 
 GUESS_SPACE = get_file_contents(GUESS_FILE)
 SOLUTION_SPACE = get_file_contents(SOLUTION_FILE)
@@ -34,6 +35,7 @@ class Solver:
         self.guess_history = []
         if poss==1:
             self.possibilties = SOLUTION_SPACE
+            self.first = "48-36=12"
         else:
             self.possibilties = GUESS_SPACE
 
@@ -68,5 +70,11 @@ class Solver:
         return e
 
     def get_best_guess(self):
-        entropies = {g:Solver.calculate_entropy(self.dist(g)) for g in self.possibilties}
-        return max(entropies, key=entropies.get)
+        if self.guess_history==[]:
+            entropies = {g:Solver.calculate_entropy(self.dist(g)) for g in self.possibilties}
+            return max(entropies, key=entropies.get)
+        else:
+            return self.first
+
+    def get_random_guess(self):
+        return random.choice(self.possibilties)
