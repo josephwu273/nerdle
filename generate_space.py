@@ -54,8 +54,11 @@ def generate_guess_space(disp=True):
 def generate_solution_space(disp=True):
     gspace = get_file_contents(GUESS_FILE)
     if len(gspace)==0:
-        print("Generating guess space...")
+        print("Generating guess space first...")
         gspace = generate_guess_space()
+    sspace = get_file_contents(GUESS_FILE)
+    if len(sspace)!=0:
+        raise Exception(f"{SOLUTION_FILE} is not empty. Clear it manually to make sure you are not overwriting good data")
     sspace = []
     n = len(gspace)
     i=0

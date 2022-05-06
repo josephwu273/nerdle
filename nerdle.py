@@ -87,7 +87,7 @@ class Game:
 
     def play(self, gue):
         if Guess.validate(gue):
-            pattern = self.get_patten(gue)
+            pattern = get_patten(self.answer, gue)
             self.remaining -= 1
             print(pattern)
             if pattern==EXACT*LENGTH:
@@ -99,29 +99,28 @@ class Game:
         else:
             print("Bad Guess. Try again")
 
-    def get_patten(self, gue):
-        """
-        Given guess <gue> outputs the answer patten as a string. If given an
-        invalid guess, returns a string of 0-s
-        """
-        if not Guess.validate(gue):
-            return "0"*LENGTH
-        output = [WRONG]*LENGTH
-        ans = self.answer
-        counts = {c:ans.count(c) for c in ans}
-        #EXACT Pass. To handle duplicate chars correctly, It is neceary to 
-        # first pass through the guess checking for exact matches
-        for i in range(LENGTH):
-            a=ans[i]
-            g=gue[i]
-            if a==g:
-                output[i]=EXACT
-                counts[g] -= 1
-        #CLOSE pass, now pass through inserting CLOSE as neceesary
-        for j in range(LENGTH):
-            a=ans[j]
-            g=gue[j]
-            if a!=g and g in ans and counts[g]>0:
-                output[j]=CLOSE
-                counts[g] -= 1
-        return "".join(output)
+def get_patten(ans, gue):
+    """
+    Given guess <gue> outputs the answer patten as a string. If given an
+    invalid guess, returns a string of 0-s
+    """
+    if not Guess.validate(gue):
+        return "0"*LENGTH
+    output = [WRONG]*LENGTH
+    counts = {c:ans.count(c) for c in ans}
+    #EXACT Pass. To handle duplicate chars correctly, It is neceary to 
+    # first pass through the guess checking for exact matches
+    for i in range(LENGTH):
+        a=ans[i]
+        g=gue[i]
+        if a==g:
+            output[i]=EXACT
+            counts[g] -= 1
+    #CLOSE pass, now pass through inserting CLOSE as neceesary
+    for j in range(LENGTH):
+        a=ans[j]
+        g=gue[j]
+        if a!=g and g in ans and counts[g]>0:
+            output[j]=CLOSE
+            counts[g] -= 1
+    return "".join(output)
