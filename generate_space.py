@@ -23,7 +23,7 @@ def generate_guess_space(disp=True):
     all_combos = product(string.digits+"+-*/", repeat=LENGTH-3)
     #n is the the total number of candidates we must check
     #We peform some pruning first so n isn't actually isn't 14^LENGTH
-    n = 12*(14**5)*10*6
+    n = 12*(14**5)*10*6 #387233280
     i=0
     t = Timer(n, disp)
     for c in all_combos:

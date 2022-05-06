@@ -89,15 +89,18 @@ class Game:
         if Guess.validate(gue):
             pattern = get_patten(self.answer, gue)
             self.remaining -= 1
-            print(pattern)
             if pattern==EXACT*LENGTH:
-                print(f"CORRECT! Guessed in {NUM_GUESSES-self.remaining}")
+                #Correct guess
+                code=0
             elif self.remaining==0:
-                print("GAME OVER")
+                #GAME OVER
+                code=-1
             else:
-                print("Guess again...")
+                #Guess again
+                code=0
+            return (pattern, code)
         else:
-            print("Bad Guess. Try again")
+            raise ValueError("Bad Guess. Try again")
 
 def get_patten(ans, gue):
     """
