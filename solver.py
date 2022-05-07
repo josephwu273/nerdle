@@ -40,12 +40,15 @@ class Solver:
             self.possibilties = GUESS_SPACE
 
     def prune(self, gue, pattern):
-        pruned_possiblities = []
+        self.guess_history.append(gue)
+        pruned_possibilities = []
         for a in self.possibilties:
             if nerdle.get_patten(a, gue)==pattern:
-                pruned_possiblities.append(a)
-        self.possibilties = pruned_possiblities
-        return self.possibilties
+                pruned_possibilities.append(a)
+        return pruned_possibilities
+    
+    def update_possibilities(self, gue, pattern):
+        self.possibilties = self.prune(gue, pattern)
     
     def dist(self, g):
         """
@@ -71,10 +74,10 @@ class Solver:
 
     def get_best_guess(self):
         if self.guess_history==[]:
+            return self.first
+        else:
             entropies = {g:Solver.calculate_entropy(self.dist(g)) for g in self.possibilties}
             return max(entropies, key=entropies.get)
-        else:
-            return self.first
-
+            
     def get_random_guess(self):
         return random.choice(self.possibilties)
