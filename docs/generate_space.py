@@ -1,3 +1,5 @@
+import sys
+sys.path.append("..")
 from nerdle import *
 from itertools import product
 from docs.Timer import Timer
@@ -5,8 +7,8 @@ import string
 
 
 
-GUESS_FILE = "docs/guess_space.txt"
-SOLUTION_FILE = "docs/solution_space.txt"
+GUESS_FILE = "guess_space.txt"
+SOLUTION_FILE = "solution_space.txt"
 
 
 
@@ -75,6 +77,9 @@ def generate_solution_space(disp=True):
     with open(SOLUTION_FILE, "w") as sfile:
         sfile.writelines(sspace)
     return sspace
+
+
+
 
 if __name__=="__main__":
     import sys
