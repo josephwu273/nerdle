@@ -1,32 +1,13 @@
 import nerdle
 from docs.generate_space import *
 from math import log2 as lg
-from docs.Timer import Timer
 from scipy.stats import entropy
-import csv
 import random
+
+
 
 GUESS_SPACE = get_file_contents(GUESS_FILE)
 SOLUTION_SPACE = get_file_contents(SOLUTION_FILE)
-
-def get_first(poss):
-    x = Solver(poss)
-    beste = 0
-    best_guess = ""
-    n = len(x.possibilties)
-    t = Timer(n)
-    i=0
-    for g in x.possibilties:
-        e = Solver.calculate_entropy(x.dist(g))
-        if e > beste:
-            beste = e
-            best_guess = g
-        with open("foo.csv", "a", newline="") as f:
-            writer = csv.writer(f)
-            writer.writerow([g, e])
-        i += 1
-        print(f"{i} of {n}: {t.remains(i)}",end="\r")
-    return best_guess
 
 
 
