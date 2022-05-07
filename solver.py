@@ -1,7 +1,7 @@
 import nerdle
 from generate_space import *
 from math import log2 as lg
-from Timer import Timer
+from docs.Timer import Timer
 from scipy.stats import entropy
 import csv
 import random

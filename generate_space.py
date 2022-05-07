@@ -1,6 +1,6 @@
 from nerdle import *
 from itertools import product
-from Timer import Timer
+from docs.Timer import Timer
 import string
 
 
