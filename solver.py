@@ -1,20 +1,23 @@
 import nerdle
-from docs.generate_space import *
 from math import log2 as lg
 from scipy.stats import entropy
 import random
 
 
-
-GUESS_SPACE = get_file_contents(GUESS_FILE)
-SOLUTION_SPACE = get_file_contents(SOLUTION_FILE)
-
+with open("docs/guess_space.txt", "r") as file:
+    GUESS_SPACE = [e for e in file.read().split("\n") if e]
+with open("docs/solution_space.txt", "r") as file:
+    SOLUTION_SPACE = [e for e in file.read().split("\n") if e]
 
 
 class Solver:
-    def __init__(self, poss=1):
+    def __init__(self, use_soln=True):
+        """
+        use_soln is the initial space we search over. It is set to True by 
+        default
+        """
         self.guess_history = []
-        if poss==1:
+        if use_soln:
             self.possibilties = SOLUTION_SPACE
             self.first = "48-36=12"
         else:
@@ -57,7 +60,8 @@ class Solver:
         if self.guess_history==[]:
             return self.first
         else:
-            entropies = {g:Solver.calculate_entropy(self.dist(g)) for g in self.possibilties}
+            entropies = {g:Solver.calculate_entropy(self.dist(g))
+                 for g in self.possibilties}
             return max(entropies, key=entropies.get)
             
     def get_random_guess(self):
