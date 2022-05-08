@@ -17,6 +17,7 @@ class Solver:
         default
         """
         self.guess_history = []
+        self.solved = False
         if use_soln:
             self.possibilties = SOLUTION_SPACE
             self.first = "48-36=12"
@@ -57,6 +58,9 @@ class Solver:
         return e
 
     def get_best_guess(self):
+        if len(self.possibilties)==1:
+            self.solved = True
+            return self.possibilties[0]
         if self.guess_history==[]:
             return self.first
         else:
@@ -66,3 +70,15 @@ class Solver:
             
     def get_random_guess(self):
         return random.choice(self.possibilties)
+
+
+def startInteractive():
+    s = Solver()
+    g = s.get_best_guess()
+    print(f"The best guess is:\n{g}")
+    while not s.solved:
+        p = input("Type in the pattern:\n")
+        s.update_possibilities(g,p)
+        g = s.get_best_guess()
+        print(f"The best guess is:\n{g}")
+    print("SOLVED!!")
