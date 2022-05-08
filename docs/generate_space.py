@@ -77,20 +77,4 @@ def generate_solution_space(disp=True):
     with open(SOLUTION_FILE, "w") as sfile:
         sfile.writelines(sspace)
     return sspace
-
-
-
-
-if __name__=="__main__":
-    import sys
-    a = sys.argv[1]
-    if "g" in a and "s" in a:
-        print("GETTING GUESS AND SOLUTION SPACES...")
-        generate_guess_space()
-        generate_solution_space()
-    elif "g" in a and "s" not in a:
-        print("GETTING GUESS SPACE ONLY...")
-        generate_guess_space()
-    elif "g" not in a and "s" in a:
-        print("GETTING SOLUTION SPACE ONLY...")
-        generate_solution_space()
+    

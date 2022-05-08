@@ -1,7 +1,7 @@
 import nerdle
 from math import log2 as lg
-from scipy.stats import entropy
-import random
+#from scipy.stats import entropy
+from random import choice as rc
 
 
 with open("docs/guess_space.txt", "r") as file:
@@ -69,16 +69,19 @@ class Solver:
             return max(entropies, key=entropies.get)
             
     def get_random_guess(self):
-        return random.choice(self.possibilties)
+        return rc(self.possibilties)
 
 
 def startInteractive():
     s = Solver()
     g = s.get_best_guess()
-    print(f"The best guess is:\n{g}")
+    print(f"The first best guess is:\n{g}")
     while not s.solved:
         p = input("Type in the pattern:\n")
         s.update_possibilities(g,p)
         g = s.get_best_guess()
         print(f"The best guess is:\n{g}")
     print("SOLVED!!")
+
+if __name__=="__main__":
+    startInteractive()
