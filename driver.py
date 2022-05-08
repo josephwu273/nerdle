@@ -50,15 +50,15 @@ def simGame(ans, use_soln, optimal_guess=True):
 
 
 def simulate_all(us, og):
-    sum=0
     space = SOLUTION_SPACE if us else GUESS_SPACE
     n = len(space)
     t = Timer(n)
     i=0
     failed = 0
+    scores = []
     for a in SOLUTION_SPACE:
         try:
-            sum += simGame(a, us, og)
+            scores.append(simGame(a, us, og))
         except ValueError:
             failed += 1
             n -= 1
@@ -66,5 +66,6 @@ def simulate_all(us, og):
         print(" "*50, end="\r")
         print(f"{i} of {n}, {t.remains(i)}", end="\r")
     print()
-    print(sum/n)
+    print(sum(scores)/n)
     print(failed)
+    return scores
