@@ -2,7 +2,7 @@ from docs.Timer import Timer
 import docs.generate_space as gs
 from solver import *
 import nerdle
-import csv
+from csv import writer as cw
 
 
 def guess_space():
@@ -29,7 +29,7 @@ def get_best_first(poss):
             beste = e
             best_guess = g
         with open("foo.csv", "a", newline="") as f:
-            writer = csv.writer(f)
+            writer = cw(f)
             writer.writerow([g, e])
         i += 1
         print(f"{i} of {n}: {t.remains(i)}",end="\r")
