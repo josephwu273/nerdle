@@ -21,7 +21,8 @@ def get_file_contents(f):
 def generate_guess_space(disp=True):
     gspace = get_file_contents(GUESS_FILE)
     if len(gspace)!=0:
-        raise Exception(f"{GUESS_FILE} is not empty. Clear it manually to make sure you are not overwriting good data")
+        raise Exception(f"{GUESS_FILE} is not empty. Clear it manually to "\
+            "make sure you are not overwriting good data")
     all_combos = product(string.digits+"+-*/", repeat=LENGTH-3)
     #n is the the total number of candidates we must check
     #We peform some pruning first so n isn't actually isn't 14^LENGTH
@@ -60,7 +61,8 @@ def generate_solution_space(disp=True):
         gspace = generate_guess_space()
     sspace = get_file_contents(GUESS_FILE)
     if len(sspace)!=0:
-        raise Exception(f"{SOLUTION_FILE} is not empty. Clear it manually to make sure you are not overwriting good data")
+        raise Exception(f"{SOLUTION_FILE} is not empty. Clear it manually to "\
+            "make sure you are not overwriting good data")
     sspace = []
     n = len(gspace)
     i=0
@@ -77,4 +79,3 @@ def generate_solution_space(disp=True):
     with open(SOLUTION_FILE, "w") as sfile:
         sfile.writelines(sspace)
     return sspace
-    
