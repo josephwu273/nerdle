@@ -1,4 +1,4 @@
-import re
+from re import match as rmatch, sub as rsub
 
 CHAR_SET = "0123456789+-*/="
 LENGTH = 8
@@ -29,7 +29,7 @@ class Guess:
         Checks that <s> is in the correct format. Note that an input can pass 
         check_format and still be an invalid guess.
         """
-        return bool(re.match(Guess.GUESS_REGEX,s))
+        return bool(rmatch(Guess.GUESS_REGEX,s))
 
     @staticmethod
     def split_equation(s):
@@ -44,8 +44,8 @@ class Guess:
         else:
             #strip leading 0s because python is dumb about leading zeros
             #fucking dumbass
-            LHS = re.sub(r"(^|[^\d])0+(\d)", r"\1\2", expressions[0])
-            RHS = re.sub(r"(^|[^\d])0+(\d)", r"\1\2", expressions[1])
+            LHS = rsub(r"(^|[^\d])0+(\d)", r"\1\2", expressions[0])
+            RHS = rsub(r"(^|[^\d])0+(\d)", r"\1\2", expressions[1])
             return LHS,RHS
     
     @staticmethod
@@ -67,7 +67,7 @@ class Solution(Guess):
 
     @staticmethod
     def check_format(s):
-        return bool(re.match(Solution.SOLUTION_REGEX,s))
+        return bool(rmatch(Solution.SOLUTION_REGEX,s))
 
 
 
