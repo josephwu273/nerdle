@@ -1,6 +1,6 @@
 import nerdle
 from math import log2 as lg
-#from scipy.stats import entropy
+from scipy.stats import entropy
 from random import choice as rc
 
 
@@ -25,6 +25,10 @@ class Solver:
             self.possibilties = GUESS_SPACE
 
     def prune(self, gue, pattern):
+        """
+        Given guess <gue> with resultant pattern <pattern>, returns the list of
+        answers from self.possiblities that could still work as a solution
+        """
         self.guess_history.append(gue)
         pruned_possibilities = []
         for a in self.possibilties:
@@ -50,12 +54,8 @@ class Solver:
     
     @staticmethod
     def calculate_entropy(dist):
-        e = 0
-        n = sum(dist.values())
-        for d in dist:
-            p = dist[d]/n
-            e += p*lg(1/p)
-        return e
+        pdist = list(dist.values())
+        return entropy(pdist)
 
     def get_best_guess(self):
         if len(self.possibilties)==1:
