@@ -1,4 +1,3 @@
-from turtle import update
 import nerdle
 from math import log2 as lg
 from scipy.stats import entropy
