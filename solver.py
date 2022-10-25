@@ -1,3 +1,4 @@
+from turtle import update
 import nerdle
 from math import log2 as lg
 from scipy.stats import entropy
@@ -11,18 +12,21 @@ with open("docs/solution_space.txt", "r") as file:
 
 
 class Solver:
-    def __init__(self, use_soln=True):
+    def __init__(self, heur=1, limit_guess=True, hard=True):
         """
-        use_soln is the initial space we search over. It is set to True by 
-        default
+        limit_guess dictates if we limit the guesses to solutions
+        hard dictates if we play in hard mode or not
         """
+        self.heuristic = {1:self.calculate_entropy}[heur]
+        if limit_guess:
+            self.guess_space = SOLUTION_SPACE
+        else:
+            self.guess_space = GUESS_SPACE
+        self.hard = hard
         self.guess_history = []
         self.solved = False
-        if use_soln:
-            self.possibilties = SOLUTION_SPACE
-            self.first = "48-36=12"
-        else:
-            self.possibilties = GUESS_SPACE
+        self.possibilties = SOLUTION_SPACE
+        self.first = "48-36=12"
 
     def prune(self, gue, pattern):
         """
@@ -36,8 +40,10 @@ class Solver:
                 pruned_possibilities.append(a)
         return pruned_possibilities
     
-    def update_possibilities(self, gue, pattern):
+    def update(self, gue, pattern):
         self.possibilties = self.prune(gue, pattern)
+        if self.hard:
+            self.guess_space =  self.possibilties
     
     def dist(self, g):
         """
@@ -46,40 +52,35 @@ class Solver:
         dist = dict()
         for a in self.possibilties:
             p = nerdle.get_patten(a,g)
-            if p in dist:
-                dist[p] += 1
-            else:
-                dist[p]=1
+            dist[p] = dist.get(p,0)+1
         return dist
     
-    @staticmethod
-    def calculate_entropy(dist):
-        pdist = list(dist.values())
+    def calculate_entropy(self, g):
+        pdist = list(self.dist(g).values())
         return entropy(pdist)
-
-    def get_best_guess(self):
+    
+    def get_next_guess(self):
         if len(self.possibilties)==1:
             self.solved = True
             return self.possibilties[0]
         if self.guess_history==[]:
             return self.first
         else:
-            entropies = {g:Solver.calculate_entropy(self.dist(g))
-                 for g in self.possibilties}
-            return max(entropies, key=entropies.get)
+            scores = {g:self.heuristic(g) for g in GUESS_SPACE}
+            return max(scores, key=scores.get)
             
     def get_random_guess(self):
         return rc(self.possibilties)
 
 
-def startInteractive():
-    s = Solver()
+def startInteractive(he,lg,ha):
+    s = Solver(he,lg,ha)
     g = s.get_best_guess()
     print(f"The first best guess is:\n{g}")
     while not s.solved:
         p = input("Type in the pattern:\n")
-        s.update_possibilities(g,p)
-        g = s.get_best_guess()
+        s.update(g,p)
+        #g = s.get_best_guess()
         print(f"The best guess is:\n{g}")
     print("SOLVED!!")
 

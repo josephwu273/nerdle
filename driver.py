@@ -39,12 +39,12 @@ def get_best_first(poss):
 def simGame(ans, use_soln, optimal_guess=True):
     ga = nerdle.Game(ans)
     s = Solver(use_soln)
-    guesser = s.get_best_guess if optimal_guess else s.get_random_guess
+    guesser = s.get_next_guess if optimal_guess else s.get_random_guess
     unsolved = True
     while unsolved:
         gu = guesser()
         p,c = ga.play(gu)
-        s.update_possibilities(gu,p)
+        s.update(gu,p)
         unsolved = not bool(c)
     return (nerdle.NUM_GUESSES-ga.remaining)
 
