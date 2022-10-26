@@ -13,6 +13,7 @@ class Guess:
     #No //-symbol
     
     @classmethod
+    #This needs to be a class method to insure the correct check_format() is called
     def validate(cls, s):
         return cls.check_equality(s) and cls.check_format(s) #and cls.check_length(s)
         

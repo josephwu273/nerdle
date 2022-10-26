@@ -70,18 +70,34 @@ class Solver:
             
     def get_random_guess(self):
         return rc(self.possibilties)
+    
+    def startInteractive(self):
+        g = self.get_next_guess()
+        print(f"The first best guess is:\n{g}")
+        while not self.solved:
+            p = input("Type in the pattern:\n")
+            self.update(g,p)
+            g = self.get_next_guess()
+            print(f"The best guess is:\n{g}")
+        print("SOLVED!!")
 
 
-def startInteractive(he,lg,ha):
-    s = Solver(he,lg,ha)
-    g = s.get_best_guess()
-    print(f"The first best guess is:\n{g}")
-    while not s.solved:
-        p = input("Type in the pattern:\n")
-        s.update(g,p)
-        #g = s.get_best_guess()
-        print(f"The best guess is:\n{g}")
-    print("SOLVED!!")
+class Simulator(Solver):
+    def __init__(self, ans, heur=1, limit_guess=True, hard=True):
+        Solver.__init__(heur, limit_guess, hard)
+        self.ans = ans
+
+    def simulate(self):
+        ga = nerdle.Game(self.ans)
+        while not self.solved:
+            gu = self.get_next_guess()
+            p,c = ga.play(gu)
+            s.update(gu,p)
+            unsolved = not bool(c)
+        return (nerdle.NUM_GUESSES-ga.remaining)
+    
+
 
 if __name__=="__main__":
-    startInteractive()
+    s = Solver()
+    s.startInteractive()
