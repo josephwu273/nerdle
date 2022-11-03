@@ -96,6 +96,9 @@ class Simulator(Solver):
             unsolved = not bool(c)
         return (nerdle.NUM_GUESSES-ga.remaining)
     
+    @staticmethod
+    def simulate_all():
+        pass
 
 
 if __name__=="__main__":
