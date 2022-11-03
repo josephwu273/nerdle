@@ -1,18 +1,8 @@
 from docs.Timer import Timer
-import docs.generate_space as gs
+import docs.generate_solution as gs
 from solver import *
 import nerdle
 from csv import writer as cw
-
-
-def guess_space():
-    print("GENERATING GUESS SPACE...")
-    gs.generate_guess_space(True)
-
-
-def solution_space():
-    print("GENERATING SOLUTION SPACE...")
-    gs.generate_solution_space(True)
 
 
 def get_best_first(poss):
