@@ -1,8 +1,6 @@
 from re import match as rmatch, sub as rsub
 
 CHAR_SET = "0123456789+-*/="
-LENGTH = 8
-NUM_GUESSES = 6
 EXACT = "G"
 CLOSE = "P"
 WRONG = "B"
@@ -10,6 +8,7 @@ WRONG = "B"
 
 class Guess:
     GUESS_REGEX = r"^(?!.*//)[\d+\-*/]*=[\d+\-*/]*$"
+    LHS_REGEX = RHS_REGEX = r"^(\d|\+|\-|\d\*\*|\d\*|\d\/)*\d$"
     #No //-symbol
     
     @classmethod
@@ -17,13 +16,6 @@ class Guess:
     def validate(cls, s):
         return cls.check_equality(s) and cls.check_format(s) #and cls.check_length(s)
         
-    @staticmethod
-    def check_length(s):
-        """
-        Checks that <s> is the right LENGTH for a nerdle guess
-        """
-        return len(s)==LENGTH
-    
     @staticmethod
     def check_format(s):
         """
@@ -35,7 +27,7 @@ class Guess:
     @staticmethod
     def split_equation(s):
         """
-        Returns LHS and RHS of equation as a tuple of stringles. Also strips LHS
+        Returns LHS and RHS of equation as a tuple of strings. Also strips LHS
         and RHS of any leading zeroes that will cause SyntaxErrors in Python. 
         """
         expressions = s.split("=")
@@ -73,9 +65,41 @@ class Solution(Guess):
 
 
 class Game:
-    def __init__(self, ans):
+    @staticmethod
+    def get_patten(ans, gue):
+        """
+        Given guess <gue> outputs the answer patten as a string.
+        """
+        if len(ans)!=len(gue):
+            raise ValueError("Answer and guess should have the same length")
+        if not Guess.validate(gue):
+            raise ValueError("Input is not a valid guess")
+
+        le = len(ans)
+        output = [WRONG]*le
+        counts = {c:ans.count(c) for c in ans}
+        #EXACT Pass. To handle duplicate chars correctly, It is neceary to 
+        # first pass through the guess checking for exact matches
+        for i in range(le):
+            a=ans[i]
+            g=gue[i]
+            if a==g:
+                output[i]=EXACT
+                counts[g] -= 1
+        #CLOSE pass, now pass through inserting CLOSE as neceesary
+        for j in range(le):
+            a=ans[j]
+            g=gue[j]
+            if a!=g and g in ans and counts[g]>0:
+                output[j]=CLOSE
+                counts[g] -= 1
+        return "".join(output)
+
+    def __init__(self, ans, num_guesses=6):
         self.answer = ans
-        self.remaining = NUM_GUESSES
+        self.remaining = num_guesses
+        self.len = len(ans)
+        self.status = 0
 
     @property
     def answer(self):
@@ -91,50 +115,18 @@ class Game:
     @remaining.setter
     def remaining(self,r):
         if r<0:
-            raise ValueError("Game Over")
+            self.status = -1
+            raise AttributeError("Negative guesses")
+        elif r==0:
+            self.status = -1
         self._remaining = r
 
     def play(self, gue):
         if Guess.validate(gue):
-            if self.remaining==0:
-                raise ValueError("Game Over")
-            pattern = get_patten(self.answer, gue)
+            pattern = Game.get_patten(self.answer, gue)
             self.remaining -= 1
-            if pattern==EXACT*LENGTH:
-                #Correct guess
-                code=1
-            elif self.remaining==0:
-                #GAME OVER
-                code=-1
-            else:
-                #Guess again
-                code=0
-            return (pattern, code)
+            if pattern==EXACT*self.len:
+                self.status = 1
+            return pattern
         else:
             raise IOError("Bad Guess. Try again")
-
-def get_patten(ans, gue):
-    """
-    Given guess <gue> outputs the answer patten as a string. If given an
-    invalid guess, returns a string of 0-s
-    """
-    if not Guess.validate(gue):
-        return "0"*LENGTH
-    output = [WRONG]*LENGTH
-    counts = {c:ans.count(c) for c in ans}
-    #EXACT Pass. To handle duplicate chars correctly, It is neceary to 
-    # first pass through the guess checking for exact matches
-    for i in range(LENGTH):
-        a=ans[i]
-        g=gue[i]
-        if a==g:
-            output[i]=EXACT
-            counts[g] -= 1
-    #CLOSE pass, now pass through inserting CLOSE as neceesary
-    for j in range(LENGTH):
-        a=ans[j]
-        g=gue[j]
-        if a!=g and g in ans and counts[g]>0:
-            output[j]=CLOSE
-            counts[g] -= 1
-    return "".join(output)
