@@ -100,14 +100,13 @@ class Game:
         self.remaining = num_guesses
         self.len = len(ans)
         self.status = 0
-
     @property
     def answer(self):
         return self._answer
     @answer.setter
     def answer(self, a):
         if not Solution.validate(a):
-            raise IOError("Inputted answer is not a valid Nerdle Solution")
+            raise AttributeError("Inputted answer is not a valid Nerdle Solution")
         self._answer = a
     @property
     def remaining(self):
@@ -121,12 +120,33 @@ class Game:
             self.status = -1
         self._remaining = r
 
+    def guess(self, g):
+        return Game.get_patten(self.answer, g)
+    
     def play(self, gue):
-        if Guess.validate(gue):
-            pattern = Game.get_patten(self.answer, gue)
+        if len(gue)==self.len and gue.count("=")==1 and Guess.validate(gue):
+            pattern = self.guess(gue)
             self.remaining -= 1
             if pattern==EXACT*self.len:
                 self.status = 1
             return pattern
         else:
             raise IOError("Bad Guess. Try again")
+
+    def startInteractive(self):
+        print("WELCOME TO NERDLE")
+        i = 1
+        while self.status==0:
+            g = input(f"Guess {i}:\n")
+            try:
+                p = self.play(g)
+                print(f"{p}\n")
+                i += 1
+            except IOError:
+                print("Bad Guess. Try Again")
+        if self.status==1:
+            print("YOU WON")
+            print(f"{i} guesses used")
+        elif self.status==-1:
+            print("GAME OVER")
+        pass
