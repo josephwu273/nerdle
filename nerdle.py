@@ -1,4 +1,4 @@
-from re import match as rmatch, sub as rsub
+from re import match, sub as rsub
 
 CHAR_SET = "0123456789+-*/="
 EXACT = "G"
@@ -7,22 +7,27 @@ WRONG = "B"
 
 
 class Guess:
-    GUESS_REGEX = r"^(?!.*//)[\d+\-*/]*=[\d+\-*/]*$"
-    LHS_REGEX = RHS_REGEX = r"^(\d|\+|\-|\d\*\*|\d\*|\d\/)*\d$"
     #No //-symbol
+    GUESS_REGEX = r"^(?!.*//)[\d+\-*/]*=[\d+\-*/]*$"
+    LHS_REGEX = RHS_REGEX = r"^(\d|\+|\-|\d\*\*|\d\*|\d\/)*\d$"   
     
+    #Needs to be classmethod to insure the correct regex is used
     @classmethod
-    #This needs to be a class method to insure the correct check_format() is called
     def validate(cls, s):
-        return cls.check_equality(s) and cls.check_format(s) #and cls.check_length(s)
-        
-    @staticmethod
-    def check_format(s):
-        """
-        Checks that <s> is in the correct format. Note that an input can pass 
-        check_format and still be an invalid guess.
-        """
-        return bool(rmatch(Guess.GUESS_REGEX,s))
+        lhs, rhs = cls.split_equation(s)
+        format = bool(match(cls.LHS_REGEX,lhs)) and bool(match(cls.RHS_REGEX,rhs))
+        #print(format)
+        #strip leading 0s because python is dumb about leading zeros
+        #fucking dumbass
+        LHS = rsub(r"(^|[^\d])0+(\d)", r"\1\2", lhs)
+        RHS = rsub(r"(^|[^\d])0+(\d)", r"\1\2", rhs)
+        equality = False
+        try:
+            equality = eval(LHS)==eval(RHS)
+        except:
+            pass
+        #print(equality)
+        return format and equality
 
     @staticmethod
     def split_equation(s):
@@ -35,33 +40,14 @@ class Guess:
         if len(expressions)!=2:
             raise ValueError("Equation has more than one = sign")
         else:
-            #strip leading 0s because python is dumb about leading zeros
-            #fucking dumbass
-            LHS = rsub(r"(^|[^\d])0+(\d)", r"\1\2", expressions[0])
-            RHS = rsub(r"(^|[^\d])0+(\d)", r"\1\2", expressions[1])
-            return LHS,RHS
-    
-    @staticmethod
-    def check_equality(s):
-        """
-        Checks validity/equality of equation
-        """
-        try:
-            LHS,RHS = Guess.split_equation(s)
-            return eval(LHS)==eval(RHS)
-        except:
-            return False
-
+            return expressions[0],expressions[1]
 
 
 class Solution(Guess):
-    SOLUTION_REGEX = r"^([1-9]\d*[+\-*/][1-9]\d*)([+\-*/][1-9]\d*)*=(0|[1-9]\d*)$"
     #No leading/lone zero; no leading/double operator; only numbers on RHS
-
-    @staticmethod
-    def check_format(s):
-        return bool(rmatch(Solution.SOLUTION_REGEX,s))
-
+    SOLUTION_REGEX = r"^([1-9]\d*[+\-*/][1-9]\d*)([+\-*/][1-9]\d*)*=(0|[1-9]\d*)$"
+    LHS_REGEX = r"^[1-9]\d*([\+\-\*\/][1-9]\d*)*$"
+    RHS_REGEX = r"^(0|[1-9]\d*)$"
 
 
 class Game:
