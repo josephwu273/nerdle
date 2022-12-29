@@ -1,5 +1,4 @@
 import nerdle
-from math import log2 as lg
 from scipy.stats import entropy
 from random import choice as rc
 
@@ -11,17 +10,15 @@ with open("docs/solution_space.txt", "r") as file:
 
 
 class Solver:
-    def __init__(self, heur=1, limit_guess=True, hard=True):
+    def __init__(self, heur=1, limit_guess=True):
         """
         limit_guess dictates if we limit the guesses to solutions
-        hard dictates if we play in hard mode or not
         """
         self.heuristic = {1:self.calculate_entropy}[heur]
         if limit_guess:
             self.guess_space = SOLUTION_SPACE
         else:
             self.guess_space = GUESS_SPACE
-        self.hard = hard
         self.guess_history = []
         self.solved = False
         self.possibilties = SOLUTION_SPACE
@@ -41,8 +38,6 @@ class Solver:
     
     def update(self, gue, pattern):
         self.possibilties = self.prune(gue, pattern)
-        if self.hard:
-            self.guess_space =  self.possibilties
     
     def dist(self, g):
         """
@@ -83,8 +78,8 @@ class Solver:
 
 
 class Simulator(Solver):
-    def __init__(self, ans, heur=1, limit_guess=True, hard=True):
-        Solver.__init__(heur, limit_guess, hard)
+    def __init__(self, ans, heur=1, limit_guess=True):
+        Solver.__init__(heur, limit_guess)
         self.ans = ans
 
     def simulate(self):
