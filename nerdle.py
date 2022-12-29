@@ -85,6 +85,7 @@ class Game:
         self.answer = ans
         self.remaining = num_guesses
         self.len = len(ans)
+        #0=still playing; 1=game won; -1=game lost
         self.status = 0
     @property
     def answer(self):
@@ -101,7 +102,7 @@ class Game:
     def remaining(self,r):
         if r<0:
             self.status = -1
-            raise AttributeError("Negative guesses")
+            raise AttributeError("Negative guesses. This should never happen.")
         elif r==0:
             self.status = -1
         self._remaining = r
@@ -121,6 +122,8 @@ class Game:
 
     def startInteractive(self):
         print("WELCOME TO NERDLE")
+        print(f"THE HIDDEN EQUATION IS {self.len} CHARACTERS LONG")
+        print(f"YOU HAVE {self.remaining} GUESSES TO SOLVE")
         i = 1
         while self.status==0:
             g = input(f"Guess {i}:\n")
@@ -132,7 +135,7 @@ class Game:
                 print("Bad Guess. Try Again")
         if self.status==1:
             print("YOU WON")
-            print(f"{i} guesses used")
+            print(f"{i-1} guesses used")
         elif self.status==-1:
             print("GAME OVER")
         pass
